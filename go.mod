@@ -1,11 +1,12 @@
 module github.com/yamagame/xlsxtools
 
-go 1.17
+go 1.20
 
 require (
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1
 	github.com/xuri/excelize/v2 v2.6.1
+	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 )
 
 require (

@@ -7,8 +7,10 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 
 	"github.com/xuri/excelize/v2"
+	"golang.org/x/exp/slices"
 )
 
 func OpenXLSX(filename string) (*excelize.File, error) {
@@ -107,4 +109,55 @@ func CompareXLSX(source *excelize.File, target *excelize.File) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+type Set struct {
+	Vals []string
+}
+
+func (x *Set) set(val string) {
+	idx := slices.IndexFunc(x.Vals, func(c string) bool { return c == val })
+	if idx < 0 {
+		x.Vals = append(x.Vals, val)
+	}
+}
+
+type SqlMap struct {
+	Sqls map[string][]string
+}
+
+func CreateSQL(records [][]string) []string {
+	retval := make([]string, 0)
+	idxset := new(Set)
+	sqls := new(SqlMap)
+	sqls.Sqls = make(map[string][]string, 0)
+	tablename := ""
+	indexes := ""
+	for _, record := range records {
+		if len(record) > 0 {
+			aline := strings.TrimSpace(record[0])
+			// 先頭が「#」はコメント
+			if aline != "" {
+				if aline[0:1] != "#" {
+					idxset.set(aline)
+					tablename = aline
+					// 1列目に文字があれば列名とする
+					indexes = strings.Join(record[1:], ",")
+				}
+			} else {
+				params := strings.Join(record[1:], ",")
+				sql := "INSERT INTO " + tablename + " (" + indexes + ") VALUES (" + params + ");"
+				if _, ok := sqls.Sqls[tablename]; !ok {
+					sqls.Sqls[tablename] = make([]string, 0)
+				}
+				sqls.Sqls[tablename] = append(sqls.Sqls[tablename], sql)
+			}
+		}
+	}
+	for _, tablename := range idxset.Vals {
+		for _, sql := range sqls.Sqls[tablename] {
+			retval = append(retval, sql)
+		}
+	}
+	return retval
 }
