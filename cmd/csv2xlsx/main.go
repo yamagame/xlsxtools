@@ -35,7 +35,7 @@ var rootCmd = &cobra.Command{
 			// オプションのファイル名を採用
 			filename = outFilename
 		} else {
-			// 拡張子をcsvに入れ替え
+			// 拡張子をxlsxに入れ替え
 			ext := path.Ext(csvfile)
 			filename = csvfile[0:len(csvfile)-len(ext)] + ".xlsx"
 		}
