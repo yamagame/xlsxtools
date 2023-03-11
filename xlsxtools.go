@@ -126,13 +126,21 @@ type SqlMap struct {
 	Sqls map[string][]string
 }
 
-func CreateSQL(records [][]string) []string {
+func CreateSQL(records [][]string, callback func(tablename string, indexes, params []string) string) []string {
 	retval := make([]string, 0)
 	idxset := new(Set)
 	sqls := new(SqlMap)
 	sqls.Sqls = make(map[string][]string, 0)
 	tablename := ""
 	var indexes []string
+	isValidRecord := func(fields []string) bool {
+		for _, v := range fields {
+			if v != "" {
+				return true
+			}
+		}
+		return false
+	}
 	for _, record := range records {
 		if len(record) > 0 {
 			aline := strings.TrimSpace(record[0])
@@ -145,16 +153,23 @@ func CreateSQL(records [][]string) []string {
 					indexes = record[1:]
 				}
 			} else {
-				params := strings.Join(record[1:], ",")
-				sql := "INSERT INTO " + tablename + " (" + strings.Join(indexes, ",") + ") VALUES (" + params + ");"
-				if _, ok := sqls.Sqls[tablename]; !ok {
-					sqls.Sqls[tablename] = make([]string, 0)
+				params := record[1:]
+				if isValidRecord(params) {
+					sql := callback(tablename, indexes, params)
+					if sql != "" {
+						if _, ok := sqls.Sqls[tablename]; !ok {
+							sqls.Sqls[tablename] = make([]string, 0)
+						}
+						sqls.Sqls[tablename] = append(sqls.Sqls[tablename], sql)
+					}
 				}
-				sqls.Sqls[tablename] = append(sqls.Sqls[tablename], sql)
 			}
 		}
 	}
 	for _, tablename := range idxset.Vals {
+		if len(retval) > 0 {
+			retval = append(retval, "")
+		}
 		retval = append(retval, sqls.Sqls[tablename]...)
 	}
 	return retval

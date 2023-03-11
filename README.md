@@ -48,6 +48,23 @@ $ ./bin/xlsxcmp ./testdata/test1.xlsx ./testdata/test2.xlsx
 different
 ```
 
+## csv2sql
+
+```bash
+# INSERT 文を生成
+$ ./bin/csv2sql ./testdata/company.csv
+```
+
+```bash
+# UPDATE 文を生成
+$ ./bin/csv2sql ./testdata/company.csv -k id,name -t users
+```
+
+```bash
+# DELETE 文を生成
+$ ./bin/csv2sql ./testdata/company.csv -d id,name -t users
+```
+
 ## ビルド方法
 
 go 言語の開発環境下で以下のコマンドを実行
