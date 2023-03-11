@@ -132,7 +132,7 @@ func CreateSQL(records [][]string) []string {
 	sqls := new(SqlMap)
 	sqls.Sqls = make(map[string][]string, 0)
 	tablename := ""
-	indexes := ""
+	var indexes []string
 	for _, record := range records {
 		if len(record) > 0 {
 			aline := strings.TrimSpace(record[0])
@@ -142,11 +142,11 @@ func CreateSQL(records [][]string) []string {
 					idxset.set(aline)
 					tablename = aline
 					// 1列目に文字があれば列名とする
-					indexes = strings.Join(record[1:], ",")
+					indexes = record[1:]
 				}
 			} else {
 				params := strings.Join(record[1:], ",")
-				sql := "INSERT INTO " + tablename + " (" + indexes + ") VALUES (" + params + ");"
+				sql := "INSERT INTO " + tablename + " (" + strings.Join(indexes, ",") + ") VALUES (" + params + ");"
 				if _, ok := sqls.Sqls[tablename]; !ok {
 					sqls.Sqls[tablename] = make([]string, 0)
 				}
@@ -155,9 +155,7 @@ func CreateSQL(records [][]string) []string {
 		}
 	}
 	for _, tablename := range idxset.Vals {
-		for _, sql := range sqls.Sqls[tablename] {
-			retval = append(retval, sql)
-		}
+		retval = append(retval, sqls.Sqls[tablename]...)
 	}
 	return retval
 }
