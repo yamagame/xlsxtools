@@ -15,7 +15,7 @@ const cmdShort = "convet csv to sql"
 const version = "0.1"
 
 var outFilename string
-var indexkey string
+var updatekey string
 var deletekey string
 var tablename string
 
@@ -104,10 +104,10 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		indexkeys := strings.Split(indexkey, ",")
+		indexkeys := strings.Split(updatekey, ",")
 		deletekeys := strings.Split(deletekey, ",")
 		gensql := insertIntoSQL(tablename, indexkeys)
-		if indexkey != "" {
+		if updatekey != "" {
 			gensql = updateSetSQL(tablename, indexkeys)
 		} else if deletekey != "" {
 			gensql = deleteSQL(tablename, deletekeys)
@@ -132,7 +132,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.Flags().StringVarP(&outFilename, "out", "o", "", "output sql filename")
-	rootCmd.Flags().StringVarP(&indexkey, "key", "k", "", "where index key")
+	rootCmd.Flags().StringVarP(&updatekey, "update", "u", "", "update index key")
 	rootCmd.Flags().StringVarP(&tablename, "table", "t", "", "sql table name")
 	rootCmd.Flags().StringVarP(&deletekey, "del", "d", "", "delete index key")
 	rootCmd.AddCommand(versionCmd)

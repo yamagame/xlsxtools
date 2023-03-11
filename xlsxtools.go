@@ -166,11 +166,15 @@ func CreateSQL(records [][]string, callback func(tablename string, indexes, para
 			}
 		}
 	}
+	skip := true
 	for _, tablename := range idxset.Vals {
-		if len(retval) > 0 {
-			retval = append(retval, "")
+		if len(sqls.Sqls[tablename]) > 0 {
+			if !skip {
+				retval = append(retval, "")
+			}
+			skip = false
+			retval = append(retval, sqls.Sqls[tablename]...)
 		}
-		retval = append(retval, sqls.Sqls[tablename]...)
 	}
 	return retval
 }
