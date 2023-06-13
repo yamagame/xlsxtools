@@ -4,7 +4,7 @@ all: \
 	xlsxcmp \
 	csv2sql \
 	xlsxdump \
-	repcp
+	goreplace
 
 csv2xlsx: cmd/csv2xlsx/main.go
 	go build -o bin/csv2xlsx cmd/csv2xlsx/main.go
@@ -21,5 +21,5 @@ csv2sql: cmd/csv2sql/main.go
 xlsxdump: cmd/xlsxdump/main.go
 	go build -o bin/xlsxdump cmd/xlsxdump/main.go
 
-repcp: cmd/repcp/main/main.go
-	go build -o bin/repcp cmd/repcp/main/main.go
+goreplace: cmd/goreplace/main/main.go
+	go build -o bin/goreplace cmd/goreplace/main/main.go

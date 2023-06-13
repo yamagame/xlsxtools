@@ -1,4 +1,4 @@
-// Pacakage repcpコマンドのメインパッケージ
+// Pacakage goreplaceコマンドのメインパッケージ
 package main
 
 import (
@@ -7,10 +7,10 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/yamagame/xlsxtools/cmd/repcp/replace"
+	"github.com/yamagame/xlsxtools/cmd/goreplace/replace"
 )
 
-const cmdName = "repcp"
+const cmdName = "goreplace"
 const cmdShort = "copy files while replacing strings"
 const version = "0.1"
 

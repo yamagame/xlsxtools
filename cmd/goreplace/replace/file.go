@@ -1,4 +1,4 @@
-// Pacakage repcpコマンドの構造体
+// Pacakage goreplaceコマンドの構造体
 package replace
 
 import (
