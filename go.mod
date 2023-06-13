@@ -7,6 +7,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/xuri/excelize/v2 v2.7.0
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -22,5 +23,4 @@ require (
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

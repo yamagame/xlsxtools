@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -57,7 +56,7 @@ func (x *File) IsDir() bool {
 func (x *File) Walk(call func(base string) error) error {
 	var readDir func(filename, base string) error
 	readDir = func(filename, base string) error {
-		files, err := ioutil.ReadDir(filepath.Join(filename, base))
+		files, err := os.ReadDir(filepath.Join(filename, base))
 		if err != nil {
 			return err
 		}
