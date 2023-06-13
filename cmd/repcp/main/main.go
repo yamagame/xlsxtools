@@ -1,3 +1,4 @@
+// Pacakage repcpコマンドのメインパッケージ
 package main
 
 import (
@@ -6,11 +7,11 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/yamagame/xlsxtools/cmd/pkgcopy/pkg"
+	"github.com/yamagame/xlsxtools/cmd/repcp/replace"
 )
 
-const cmdName = "pkgcopy"
-const cmdShort = "copy golang package"
+const cmdName = "repcp"
+const cmdShort = "copy files while replacing strings"
 const version = "0.1"
 
 var configPath string
@@ -30,22 +31,22 @@ var rootCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		srcName := args[0]
 		dstName := args[1]
-		var srcFile *pkg.File
-		var dstFile *pkg.File
-		pkgs := []*pkg.Package{}
+		var srcFile *replace.File
+		var dstFile *replace.File
+		pkgs := []*replace.ReplaceString{}
 		if configPath != "" {
 			bytes, err := ioutil.ReadFile(configPath)
 			if err != nil {
 				panic(err)
 			}
-			config, err := pkg.ReadConfig(string(bytes))
+			config, err := replace.ReadConfig(string(bytes))
 			if err != nil {
 				return err
 			}
 			pkgs = config.Pkgs
 		}
-		srcFile = pkg.NewFile(srcName, pkg.NewReplace(pkgs))
-		dstFile = pkg.NewFile(dstName, pkg.NewReplace(pkgs))
+		srcFile = replace.NewFile(srcName, replace.NewReplaceStrings(pkgs))
+		dstFile = replace.NewFile(dstName, replace.NewReplaceStrings(pkgs))
 		return srcFile.Copy(dstFile)
 	},
 }
@@ -55,13 +56,9 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 }
 
-func Execute() {
+func main() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func main() {
-	Execute()
 }

@@ -1,4 +1,5 @@
-package pkg
+// Pacakage repcpコマンドの構造体
+package replace
 
 import (
 	"bufio"
@@ -10,26 +11,18 @@ import (
 	"path/filepath"
 )
 
+// LineReplacer 文字列を入れ替えるインタフェース
 type LineReplacer interface {
 	Replace(src string) string
 }
 
-type CopyLine struct {
-}
-
-func (x *CopyLine) Replace(src string) string {
-	return src
-}
-
-func NewCopyLine() *CopyLine {
-	return &CopyLine{}
-}
-
+// File ファイルを管理する構造体
 type File struct {
 	Filename string
 	Replacer LineReplacer
 }
 
+// File ファイルを管理する構造体のコンストラクタ
 func NewFile(filename string, replacer LineReplacer) *File {
 	return &File{
 		Filename: filename,
@@ -37,19 +30,21 @@ func NewFile(filename string, replacer LineReplacer) *File {
 	}
 }
 
+// MakeDir ディレクトリが存在しなければ作成する
 func (x *File) MakeDir() error {
 	if !x.IsExist() {
-		fmt.Println("mkdir", x.Filename)
-		// return os.Mkdir(x.Filename, 0777)
+		return os.Mkdir(x.Filename, 0777)
 	}
 	return nil
 }
 
+// IsExist ファイルが存在するか
 func (x *File) IsExist() bool {
 	_, err := os.Stat(x.Filename)
 	return !os.IsNotExist(err)
 }
 
+// IsDir ディレクトリかどうか
 func (x *File) IsDir() bool {
 	fInfo, err := os.Stat(x.Filename)
 	if err != nil {
@@ -58,6 +53,7 @@ func (x *File) IsDir() bool {
 	return fInfo.IsDir()
 }
 
+// Walk ディレクトリに含まれるディレクトリとファイルを返す
 func (x *File) Walk(call func(base string) error) error {
 	var readDir func(filename, base string) error
 	readDir = func(filename, base string) error {
@@ -78,6 +74,7 @@ func (x *File) Walk(call func(base string) error) error {
 	return readDir(x.Filename, "")
 }
 
+// Copy 指定した文字を入れ替えながらファイルをコピーする
 func (x *File) Copy(dst *File) error {
 	if !x.IsExist() {
 		return fmt.Errorf("source file %s is not found", x.Filename)
@@ -107,11 +104,6 @@ func (x *File) Copy(dst *File) error {
 func (x *File) copy(filename string) error {
 	return x.copyFile(filename)
 }
-
-// func (x *File) copyLog(filename string) error {
-// 	fmt.Println("copy", x.Filename, filename)
-// 	return nil
-// }
 
 func (x *File) copyFile(filename string) error {
 	// 入力ファイルの指定
