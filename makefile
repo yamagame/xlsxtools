@@ -3,7 +3,8 @@ all: \
 	xlsx2csv \
 	xlsxcmp \
 	csv2sql \
-	xlsxdump
+	xlsxdump \
+	pkgcopy
 
 csv2xlsx: cmd/csv2xlsx/main.go
 	go build -o bin/csv2xlsx cmd/csv2xlsx/main.go
@@ -19,3 +20,6 @@ csv2sql: cmd/csv2sql/main.go
 
 xlsxdump: cmd/xlsxdump/main.go
 	go build -o bin/xlsxdump cmd/xlsxdump/main.go
+
+pkgcopy: cmd/pkgcopy/main/main.go
+	go build -o bin/pkgcopy cmd/pkgcopy/main/main.go
